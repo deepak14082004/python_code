@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGpt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #f5d20a;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #f5d20a;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<h1>ChatGpt</h1>
+<textarea id="prompt" placeholder="Enter your prompt here..."></textarea>
+<button id="generateButton">Generate</button>
+
+<div class="response" id="responseContainer" style="display: none;">
+    <h3>Response:</h3>
+    <p id="generatedText"></p>
+</div>
+
+<script>
+    document.getElementById('generateButton').addEventListener('click', function() {
+        const prompt = document.getElementById('prompt').value;
+
+        // Make sure the prompt is not empty
+        if (!prompt) {
+            alert('Please enter a prompt.');
+            return;
+        }
+
+        // Make a POST request to the Flask API
+        fetch('http://localhost:5000/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ prompt: prompt }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Display the generated response
+            document.getElementById('generatedText').innerText = data.response;
+            document.getElementById('responseContainer').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+            alert('Error: ' + error.message);
+        });
+    });
+</script>
+
+</body>
+</html>

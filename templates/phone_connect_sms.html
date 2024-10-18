@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send SMS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Send SMS from Your Mobile</h2>
+
+    <div class="form-container">
+        <label for="phone_number">Phone Number:</label>
+        <input type="text" id="phone_number" placeholder="Enter phone number" required>
+
+        <label for="message">Message:</label>
+        <textarea id="message" rows="4" placeholder="Enter your message" required></textarea>
+
+        <button onclick="sendSMS()">Send SMS</button>
+
+        <div id="response" class="response"></div>
+    </div>
+
+    <script>
+        function sendSMS() {
+            const phoneNumber = document.getElementById('phone_number').value;
+            const message = document.getElementById('message').value;
+            const responseDiv = document.getElementById('response');
+
+            if (!phoneNumber || !message) {
+                responseDiv.innerHTML = '<p class="error">Phone number and message are required.</p>';
+                return;
+            }
+
+            fetch('http://<android_device_ip>:5000/send_sms', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    phone_number: phoneNumber,
+                    message: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    responseDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+                } else {
+                    responseDiv.innerHTML = '<p class="success">SMS sent successfully!</p>';
+                }
+            })
+            .catch(error => {
+                responseDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            });
+        }
+    </script>
+
+</body>
+</html>

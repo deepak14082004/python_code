@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Video Feed with Filters</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+        }
+        video {
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+            border: 2px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Video Feed with Filters</h1>
+    <button id="start-button">Start Filters</button>
+    <br>
+    <video id="video-feed" autoplay playsinline></video>
+    
+    <script>
+        // Function to start the image filter
+    window.startImageFilter = function() {
+        fetch('/start_filter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('filter-response').textContent = 'Image filter started successfully!';
+                } else {
+                    document.getElementById('filter-response').textContent = 'Failed to start image filter.';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    };
+    </script>
+</body>
+</html>
